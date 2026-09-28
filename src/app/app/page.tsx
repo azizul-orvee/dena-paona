@@ -1,0 +1,70 @@
+import type { Metadata } from "next";
+
+import { BalanceHero, TotalsGrid } from "@/components/app/summary";
+import { Ledger } from "@/components/app/ledger";
+import { PeopleStrip } from "@/components/app/people-strip";
+import { SectionHeading } from "@/components/app/section-heading";
+import { requireUser } from "@/lib/auth";
+import { getEntries, getPeopleSummary, getWalletTotals } from "@/server/queries";
+
+export const metadata: Metadata = { title: "Overview" };
+export const dynamic = "force-dynamic";
+
+export default async function OverviewPage() {
+  const user = await requireUser();
+
+  const [totals, recent, people] = await Promise.all([
+    getWalletTotals(user.id),
+    getEntries(user.id, { limit: 8 }),
+    getPeopleSummary(user.id),
+  ]);
+
+  const firstName = user.name.split(" ")[0];
+
+  return (
+    <div className="space-y-8">
+      <header>
+        <p className="text-[0.8125rem] text-fg-subtle">
+          {greeting()}, {firstName}
+        </p>
+        <h1 className="mt-1 font-display text-2xl font-600 tracking-tight sm:text-[1.75rem]">
+          Here&apos;s where you stand
+        </h1>
+      </header>
+
+      <BalanceHero totals={totals} />
+
+      <TotalsGrid totals={totals} />
+
+      {people.length > 0 ? (
+        <section>
+          <SectionHeading
+            title="By person"
+            caption="Net across everything still open"
+          />
+          <PeopleStrip people={people} />
+        </section>
+      ) : null}
+
+      <section>
+        <SectionHeading
+          title="Recent activity"
+          caption="Your latest entries, newest first"
+        />
+        <Ledger
+          entries={recent}
+          emptyTitle="No entries yet"
+          emptyBody="Log the first bit of money you owe — or are owed — and your ledger starts filling in."
+        />
+      </section>
+    </div>
+  );
+}
+
+function greeting() {
+  const hour = new Date().getHours();
+  if (hour < 5) return "Up late";
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+}

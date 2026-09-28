@@ -1,0 +1,83 @@
+import { cn } from "@/lib/utils";
+
+/**
+ * The Dena-Paona mark: two tapered arrows circulating — teal is paona
+ * (coming to you), violet is dena (going out). Geometry mirrors
+ * scripts/generate-icons.mjs so the favicon and the in-app logo never drift.
+ */
+export function Mark({
+  className,
+  animated = false,
+}: {
+  className?: string;
+  animated?: boolean;
+}) {
+  const uid = animated ? "mk-a" : "mk";
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      className={cn("h-8 w-8", className)}
+      role="img"
+      aria-label="Dena-Paona"
+      fill="none"
+    >
+      <defs>
+        <linearGradient
+          id={`${uid}-paona`}
+          x1="10"
+          y1="6"
+          x2="54"
+          y2="40"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stopColor="#9BF7D8" />
+          <stop offset="55%" stopColor="#43E0A8" />
+          <stop offset="100%" stopColor="#11B87E" />
+        </linearGradient>
+        <linearGradient
+          id={`${uid}-dena`}
+          x1="54"
+          y1="58"
+          x2="10"
+          y2="24"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stopColor="#C9BAFF" />
+          <stop offset="55%" stopColor="#9B84FF" />
+          <stop offset="100%" stopColor="#6544E8" />
+        </linearGradient>
+      </defs>
+      <path d={PAONA_PATH} fill={`url(#${uid}-paona)`} />
+      <path d={DENA_PATH} fill={`url(#${uid}-dena)`} />
+    </svg>
+  );
+}
+
+export function Logo({
+  className,
+  markClassName,
+  showWordmark = true,
+}: {
+  className?: string;
+  markClassName?: string;
+  showWordmark?: boolean;
+}) {
+  return (
+    <span className={cn("inline-flex items-center gap-2.5", className)}>
+      <Mark className={cn("h-8 w-8 shrink-0", markClassName)} />
+      {showWordmark ? (
+        <span className="font-display text-[1.0625rem] font-600 leading-none tracking-tight text-fg">
+          Dena
+          <span className="text-fg-subtle">-</span>
+          Paona
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+/* Generated geometry — keep in sync with scripts/generate-icons.mjs */
+const PAONA_PATH =
+  "M 12.75 35.39 L 12.42 34.48 L 12.21 33.55 L 12.05 32.59 L 11.95 31.63 L 11.91 30.65 L 11.91 29.67 L 11.97 28.69 L 12.08 27.71 L 12.24 26.74 L 12.45 25.77 L 12.71 24.81 L 13.02 23.86 L 13.37 22.92 L 13.78 22 L 14.23 21.1 L 14.72 20.22 L 15.26 19.36 L 15.85 18.53 L 16.47 17.73 L 17.14 16.95 L 17.85 16.21 L 18.59 15.5 L 19.37 14.83 L 20.18 14.19 L 21.03 13.6 L 21.9 13.04 L 22.81 12.53 L 23.74 12.06 L 24.7 11.63 L 25.67 11.26 L 26.67 10.93 L 27.68 10.64 L 28.71 10.41 L 29.75 10.23 L 30.8 10.09 L 31.86 10.01 L 32.93 9.98 L 33.99 10.01 L 35.06 10.08 L 36.12 10.21 L 37.18 10.39 L 38.23 10.62 L 39.27 10.9 L 40.3 11.23 L 41.31 11.61 L 42.31 12.05 L 43.28 12.53 L 44.23 13.06 L 45.16 13.64 L 46.06 14.26 L 46.93 14.92 L 47.77 15.63 L 48.57 16.38 L 49.34 17.17 L 50.07 18 L 50.76 18.87 L 53.63 16.86 L 52.84 28.64 L 41.5 25.35 L 44.37 23.34 L 43.97 22.73 L 43.54 22.13 L 43.08 21.55 L 42.6 21 L 42.08 20.47 L 41.54 19.96 L 40.97 19.48 L 40.38 19.02 L 39.77 18.59 L 39.13 18.19 L 38.48 17.82 L 37.8 17.48 L 37.11 17.18 L 36.4 16.9 L 35.68 16.66 L 34.94 16.46 L 34.19 16.28 L 33.44 16.15 L 32.67 16.05 L 31.9 15.99 L 31.12 15.96 L 30.35 15.97 L 29.57 16.02 L 28.79 16.11 L 28.01 16.24 L 27.24 16.4 L 26.48 16.6 L 25.72 16.83 L 24.97 17.11 L 24.23 17.42 L 23.51 17.76 L 22.8 18.14 L 22.11 18.56 L 21.44 19.01 L 20.79 19.49 L 20.16 20.01 L 19.55 20.56 L 18.97 21.13 L 18.41 21.74 L 17.88 22.37 L 17.38 23.03 L 16.91 23.72 L 16.47 24.43 L 16.06 25.16 L 15.68 25.92 L 15.34 26.69 L 15.04 27.48 L 14.77 28.29 L 14.54 29.12 L 14.34 29.95 L 14.18 30.8 L 14.05 31.66 L 13.97 32.53 L 13.91 33.41 L 13.88 34.3 L 13.83 35.2 Z";
+const DENA_PATH =
+  "M 51.4 34.38 L 51.43 35.45 L 51.34 36.5 L 51.17 37.55 L 50.93 38.6 L 50.64 39.63 L 50.28 40.65 L 49.86 41.65 L 49.39 42.62 L 48.86 43.58 L 48.27 44.5 L 47.63 45.4 L 46.95 46.26 L 46.21 47.08 L 45.43 47.86 L 44.6 48.61 L 43.74 49.31 L 42.83 49.96 L 41.88 50.56 L 40.91 51.12 L 39.9 51.62 L 38.86 52.06 L 37.8 52.45 L 36.71 52.79 L 35.61 53.06 L 34.49 53.28 L 33.35 53.44 L 32.21 53.53 L 31.06 53.56 L 29.91 53.53 L 28.75 53.44 L 27.61 53.29 L 26.47 53.07 L 25.34 52.8 L 24.22 52.46 L 23.12 52.06 L 22.04 51.6 L 20.99 51.09 L 19.96 50.51 L 18.96 49.88 L 18 49.2 L 17.07 48.47 L 16.18 47.68 L 15.33 46.85 L 14.53 45.97 L 13.77 45.04 L 13.07 44.08 L 12.41 43.07 L 11.81 42.04 L 11.26 40.96 L 10.77 39.86 L 10.34 38.73 L 9.97 37.58 L 9.66 36.41 L 9.41 35.22 L 9.23 34.01 L 9.11 32.8 L 5.62 32.92 L 12.69 23.47 L 20.41 32.4 L 16.91 32.53 L 16.92 33.33 L 16.97 34.14 L 17.06 34.95 L 17.19 35.75 L 17.37 36.55 L 17.59 37.34 L 17.86 38.11 L 18.16 38.88 L 18.51 39.63 L 18.9 40.36 L 19.32 41.07 L 19.79 41.76 L 20.29 42.43 L 20.83 43.07 L 21.41 43.69 L 22.01 44.27 L 22.65 44.82 L 23.32 45.34 L 24.02 45.83 L 24.75 46.28 L 25.5 46.69 L 26.27 47.06 L 27.07 47.39 L 27.88 47.68 L 28.71 47.93 L 29.56 48.13 L 30.42 48.29 L 31.28 48.4 L 32.16 48.47 L 33.04 48.49 L 33.92 48.46 L 34.81 48.39 L 35.69 48.27 L 36.56 48.11 L 37.43 47.89 L 38.29 47.63 L 39.14 47.33 L 39.98 46.98 L 40.79 46.58 L 41.59 46.14 L 42.37 45.66 L 43.12 45.14 L 43.85 44.57 L 44.55 43.97 L 45.22 43.33 L 45.86 42.65 L 46.47 41.94 L 47.04 41.19 L 47.57 40.41 L 48.07 39.6 L 48.53 38.77 L 48.95 37.91 L 49.33 37.02 L 49.67 36.11 L 49.98 35.19 L 50.31 34.25 Z";

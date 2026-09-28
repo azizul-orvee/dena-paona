@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// `dena`  = money the owner OWES to someone else (payable).
+/// `paona` = money someone else owes the owner (receivable).
+enum EntryKind {
+  dena
+  paona
+
+  @@map("entry_kind")
+}
+
+// ─── Auth (Better Auth) ──────────────────────────────────────────────────────
+// Model and field names are the ones Better Auth expects; @map keeps the
+// database in the same snake_case style as the rest of the schema.
+
+model User {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  /// Account handle: sign-in identity and how friends find you to share a wallet.
+  email         String   @unique
+  emailVerified Boolean  @default(false) @map("email_verified")
+  image         String?
+  /// Optional profile field. No longer used to sign in.
+  phone         String?  @unique(map: "users_phone_unique") @db.VarChar(24)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  sessions       Session[]
+  accounts       Account[]
+  entries        Entry[]
+  sharesGiven    WalletShare[] @relation("owner")
+  sharesReceived WalletShare[] @relation("viewer")
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+/// One row per sign-in method linked to a user (e.g. Google). Magic-link
+/// users get none until they link a provider.
+model Account {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at") @db.Timestamptz(6)
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at") @db.Timestamptz(6)
+  scope                 String?
+  /// Required by Better Auth's schema; always null here (no password login).
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+/// Short-lived tokens, e.g. magic links.
+model Verification {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(6)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([identifier])
+  @@map("verifications")
+}
+
+/// Rate-limit counters. Kept in the database (not memory) so limits hold
+/// across serverless instances.
+model RateLimit {
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String @unique
+  count       Int
+  /// Unix epoch milliseconds.
+  lastRequest BigInt @map("last_request")
+
+  @@map("rate_limits")
+}
+
+// ─── Ledger ──────────────────────────────────────────────────────────────────
+
+model Entry {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerId     String    @map("owner_id") @db.Uuid
+  kind        EntryKind
+  personName  String    @map("person_name")
+  personPhone String?   @map("person_phone") @db.VarChar(24)
+  amount      Decimal   @db.Decimal(14, 2)
+  amountPaid  Decimal   @default(0) @map("amount_paid") @db.Decimal(14, 2)
+  note        String?
+  dueDate     DateTime? @map("due_date") @db.Date
+  settledAt   DateTime? @map("settled_at") @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "entries_owner_id_users_id_fk")
+
+  @@index([ownerId, kind], map: "entries_owner_kind_idx")
+  @@index([ownerId, settledAt], map: "entries_owner_settled_idx")
+  @@index([createdAt], map: "entries_created_idx")
+  @@map("entries")
+}
+
+/// Read-only grant: `viewerId` may look at `ownerId`'s wallet. Never implies
+/// write access. The table also has a CHECK (owner_id <> viewer_id)
+/// constraint, `wallet_shares_no_self`, which Prisma can't express — it lives
+/// in the migration SQL.
+model WalletShare {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerId   String   @map("owner_id") @db.Uuid
+  viewerId  String   @map("viewer_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  owner  User @relation("owner", fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "wallet_shares_owner_id_users_id_fk")
+  viewer User @relation("viewer", fields: [viewerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "wallet_shares_viewer_id_users_id_fk")
+
+  @@unique([ownerId, viewerId], map: "wallet_shares_owner_viewer_unique")
+  @@index([viewerId], map: "wallet_shares_viewer_idx")
+  @@map("wallet_shares")
+}

@@ -1,0 +1,12 @@
+"use server";
+
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
+import { auth } from "@/lib/better-auth";
+
+export async function logoutAction() {
+  // Deletes the session row and clears the cookie (via the nextCookies plugin).
+  await auth.api.signOut({ headers: await headers() });
+  redirect("/login");
+}
