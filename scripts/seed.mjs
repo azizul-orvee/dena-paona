@@ -1,13 +1,15 @@
 /**
- * Optional demo data: two accounts, a spread of entries, and a read-only
- * share between them. Safe to re-run — it clears the two demo users first.
+ * Optional demo data for the LOCAL dev database: two accounts, a spread of
+ * entries, and a read-only share between them. Safe to re-run — it clears the
+ * two demo users first. Refuses to run against Neon (production).
  *
  *   npm run seed
+ *   SEED_EMAIL=you@gmail.com npm run seed   # "Ayesha" becomes your Google account
  */
 import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { neon } from "@neondatabase/serverless";
+import pg from "pg";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -30,11 +32,25 @@ if (!process.env.DATABASE_URL) {
   process.exit(1);
 }
 
-const sql = neon(process.env.DATABASE_URL);
+// Demo data belongs in the local dev database only, never production.
+if (new URL(process.env.DATABASE_URL).hostname.endsWith(".neon.tech")) {
+  console.error("Refusing to seed: DATABASE_URL points at Neon (production).");
+  process.exit(1);
+}
 
-// Accounts are Google-only: to sign in as one of these, change the address to
-// a Google account you own before seeding.
-const AYESHA = "ayesha@example.com";
+const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
+
+/** Tagged template → parameterised query, returning the rows. */
+async function sql(strings, ...values) {
+  const text = strings.reduce((acc, s, i) => acc + `$${i}` + s);
+  const { rows } = await client.query(text, values);
+  return rows;
+}
+
+// Sign-in is Google-only, so seed "Ayesha" with your own Google email
+// (SEED_EMAIL) to log in and see her ledger. Rahim stays a placeholder.
+// Note: an existing account with that email is replaced (dev DB only).
+const AYESHA = process.env.SEED_EMAIL?.trim().toLowerCase() || "ayesha@example.com";
 const RAHIM = "rahim@example.com";
 
 /** Local calendar date, not UTC — due dates are date-only and read locally. */
@@ -46,6 +62,7 @@ function daysFromNow(n) {
 }
 
 async function main() {
+  await client.connect();
   await sql`delete from users where email in (${AYESHA}, ${RAHIM})`;
 
   const [ayesha] = await sql`
@@ -92,10 +109,14 @@ async function main() {
   console.log("Seeded.");
   console.log(`  Ayesha  ${AYESHA}  (7 entries, shares with Rahim)`);
   console.log(`  Rahim   ${RAHIM}  (can view Ayesha's wallet)`);
-  console.log("Sign-in is Google-only: seed with your own Google emails to log in as them.");
+  if (!process.env.SEED_EMAIL) {
+    console.log("Sign-in is Google-only: re-run with SEED_EMAIL=<your Google email> to log in as Ayesha.");
+  }
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
+  })
+  .finally(() => client.end());

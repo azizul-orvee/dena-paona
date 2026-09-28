@@ -36,11 +36,19 @@
 npm install
 ```
 
-### 2. Create a Neon database
+### 2. Start a local database
 
-Make a project at [neon.tech](https://neon.tech) and copy the **direct** connection string
-(Prisma migrations need it). If you'd rather the app use the pooled `-pooler` URL,
-put that in `DATABASE_URL` and the direct one in `DIRECT_URL`.
+Development uses a local Postgres; the Neon database is production only.
+
+```bash
+brew install postgresql@17
+brew services start postgresql@17
+createdb dena_paona_dev
+```
+
+(For production, make a Neon project at [neon.tech](https://neon.tech) and use its **direct**
+connection string in Vercel. If you'd rather use the pooled `-pooler` URL, put that in
+`DATABASE_URL` and the direct one in `DIRECT_URL`.)
 
 ### 3. Configure environment
 
@@ -75,8 +83,14 @@ Creates two linked accounts with entries and a share between them.
 npm run seed
 ```
 
-Sign-in is Google-only, so edit the two emails in `scripts/seed.mjs` to Google
-accounts you own before seeding. Ayesha has granted Rahim read-only access to her wallet.
+Sign-in is Google-only, so pass your own Google email to sign in as Ayesha:
+
+```bash
+SEED_EMAIL=you@gmail.com npm run seed
+```
+
+Ayesha has granted Rahim read-only access to her wallet. The seed refuses to run
+against Neon (production).
 
 ## Deploying to Vercel
 
@@ -104,8 +118,9 @@ vercel env add GOOGLE_CLIENT_SECRET
 vercel deploy --prod
 ```
 
-> Run `npm run db:migrate` against the production database before deploying a
-> schema change, or the app will error on its first query.
+> Run migrations against the production database before deploying a schema change,
+> or the app will error on its first query:
+> `DATABASE_URL="$PROD_DATABASE_URL" npx prisma migrate deploy`
 
 ## Project layout
 

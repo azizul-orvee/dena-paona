@@ -1,6 +1,7 @@
 import "server-only";
 
 import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 import { PrismaClient } from "@/generated/prisma/client";
 
@@ -16,9 +17,14 @@ function connect(): PrismaClient {
     );
   }
 
-  // WebSocket pool rather than the HTTP driver: Better Auth needs transactions.
+  // Neon (production) goes through Neon's WebSocket pool — not its HTTP
+  // driver, because Better Auth needs transactions. Anything else, e.g. the
+  // local dev Postgres, speaks the plain Postgres protocol.
+  const isNeon = new URL(connectionString).hostname.endsWith(".neon.tech");
   const client = new PrismaClient({
-    adapter: new PrismaNeon({ connectionString }),
+    adapter: isNeon
+      ? new PrismaNeon({ connectionString })
+      : new PrismaPg({ connectionString }),
   });
 
   // One client per process — and across dev hot reloads, which would
