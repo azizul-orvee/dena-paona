@@ -61,3 +61,8 @@ Why things are the way they are. Newest first.
 **Context:** Owner wants people they share with to see the whole ledger.
 **Decision:** Viewers get every entry field (phone, WhatsApp, address, note, due date, part payments). The read-only ledger starts on the "All" filter instead of "Open" (`src/components/app/ledger.tsx`) so settled entries aren't hidden.
 **Consequences:** Sharing now exposes counterparties' phone numbers and addresses to viewers — that is intentional.
+
+## 2026-10-01 — Stay Google-only for public launch
+**Context:** Owner is opening sign-up to strangers and asked whether Google-only is too restrictive.
+**Decision:** Keep Google-only (the owner's standing decision). Target users are mostly on Android, where a Google account is effectively universal; it avoids passwords, email delivery and OTP costs.
+**Consequences:** Revisit only if real users ask for another option; phone OTP is the likeliest candidate for Bangladesh but costs money per SMS.

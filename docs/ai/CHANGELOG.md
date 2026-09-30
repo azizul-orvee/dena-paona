@@ -2,6 +2,18 @@
 
 All changes to this project, newest first. Every AI tool and human must add an entry here after each change.
 
+## 2026-10-01 — Privacy Policy and Terms pages
+**Type:** content
+**Tool:** Claude Code
+**What changed:**
+- New public pages `src/app/privacy/page.tsx` and `src/app/terms/page.tsx`, sharing `src/components/legal/legal-page.tsx` (`LegalPage`, `LegalSection`, `LegalLinks`, `CONTACT_EMAIL`)
+- Privacy policy covers exactly what the app stores (Google name/email/picture; entries incl. optional phone/address/note; session IP + user agent; rate-limit counters), who sees it (you, people you share with, Vercel/Neon), Google API Limited Use statement, deletion by email within 30 days
+- Terms: not a bank / no money moves, user responsible for records and third-party details, acceptable use, as-is, Bangladesh law
+- Links: landing footer (`src/app/page.tsx`) and a consent line under "Continue with Google" (`src/components/auth/login-form.tsx`)
+- Docs: live URL `https://dena-paona-final.vercel.app` recorded in `PROJECT.md` / `STATUS.md`
+**Why:** Google requires a home page, privacy policy and terms link before the OAuth app can be published for public sign-up.
+**Notes / gotchas:** `CONTACT_EMAIL` is the owner's Gmail and is shown publicly on both pages — change it in one place if they want a different address. Pages are static and outside the `/app` proxy gate. The policy promises no ads/analytics; if analytics are added later, update `/privacy`.
+
 ## 2026-10-01 — Production DB migrated to `2_entry_address`
 **Type:** deploy
 **Tool:** Claude Code

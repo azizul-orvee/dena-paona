@@ -14,6 +14,7 @@ src/
 ├── app/
 │   ├── page.tsx           ← landing page (redirects signed-in users to /app)
 │   ├── (auth)/            ← split-screen auth layout; /login, /register (redirect)
+│   ├── privacy/, terms/   ← public legal pages (shell: src/components/legal/legal-page.tsx)
 │   ├── app/               ← the authenticated product (layout calls requireUser)
 │   ├── api/auth/[...all]/ ← Better Auth route handler
 │   └── fonts/, icon.svg, manifest.ts, error.tsx, not-found.tsx
@@ -41,6 +42,8 @@ src/
 | `/` | `src/app/page.tsx` | Landing page; signed-in users → `/app` |
 | `/login` | `src/app/(auth)/login/page.tsx` | "Continue with Google"; shows `?error=` messages; honours `?next=` (same-site paths only) |
 | `/register` | `src/app/(auth)/register/page.tsx` | Redirects to `/login` (old links) |
+| `/privacy` | `src/app/privacy/page.tsx` | Public Privacy Policy (linked from Google's consent screen, landing footer, login) |
+| `/terms` | `src/app/terms/page.tsx` | Public Terms of Service (same) |
 | `/app` | `src/app/app/page.tsx` | Overview: net position, totals, by-person strip, recent entries |
 | `/app/dena`, `/app/paona` | `src/app/app/{dena,paona}/page.tsx` | One side of the ledger (`KindPage`) |
 | `/app/shared` | `src/app/app/shared/page.tsx` | Grant/revoke read access by email; wallets shared with me |

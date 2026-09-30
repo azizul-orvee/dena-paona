@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
@@ -83,6 +84,18 @@ export function LoginForm({ callbackURL, googleEnabled, initialError }: Props) {
             {pending ? "Opening Google…" : "Continue with Google"}
           </span>
         </Button>
+
+        <p className="mt-4 text-center text-[0.75rem] leading-relaxed text-fg-subtle">
+          By continuing you agree to our{" "}
+          <Link href="/terms" className="underline underline-offset-2 hover:text-fg">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="underline underline-offset-2 hover:text-fg">
+            Privacy Policy
+          </Link>
+          .
+        </p>
 
         {!googleEnabled ? (
           <p className="mt-3 text-[0.75rem] text-fg-subtle">

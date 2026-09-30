@@ -61,7 +61,7 @@ npm run dev                      # http://localhost:3000
 `.env.example` documents each one with where to get it. If the Google pair is missing, the login button is disabled and nobody can sign in.
 
 ## Deployment
-Not deployed yet. Plan: import the GitHub repo into Vercel (Next.js preset, no `vercel.json`), set the env vars above for Production, set `BETTER_AUTH_URL` to the production URL, and apply migrations to production before any deploy that changes the schema — only when the owner asks: `npm run db:migrate:prod` (outside the Claude Code sandbox). Don't use `DATABASE_URL="$PROD_DATABASE_URL" …` — that variable only lives in `.env.local`, not the shell. `postinstall` generates the Prisma client during the Vercel build. TODO: confirm with user — production domain and Vercel project.
+Deployed on Vercel at `https://dena-paona-final.vercel.app` (Vercel project set up by the owner; env vars: `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` for Production and Preview). Pushing to `main` deploys. Before any deploy that changes the schema, apply migrations to production — only when the owner asks: `npm run db:migrate:prod` (outside the Claude Code sandbox). Google OAuth client needs origin `https://dena-paona-final.vercel.app` and redirect URI `https://dena-paona-final.vercel.app/api/auth/callback/google`; publishing the consent screen needs the `/privacy` and `/terms` pages.
 
 ## External accounts / dashboards
 - **GitHub:** `github.com/azizul-orvee/dena-paona`

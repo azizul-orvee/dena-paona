@@ -11,6 +11,7 @@ import {
 
 import { Aurora } from "@/components/aurora";
 import { Logo } from "@/components/brand";
+import { LegalLinks } from "@/components/legal/legal-page";
 import { Hero } from "@/components/landing/hero";
 import { FeatureGrid } from "@/components/landing/feature-grid";
 import { HowItWorks } from "@/components/landing/how-it-works";
@@ -122,6 +123,7 @@ export default async function LandingPage() {
             <HandCoins className="h-3.5 w-3.5" />
             Dena-Paona — a quieter way to keep track.
           </p>
+          <LegalLinks />
         </div>
       </footer>
     </div>

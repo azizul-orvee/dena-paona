@@ -1,9 +1,10 @@
 # Status — last updated 2026-10-01
 
 ## Current state
-Works end-to-end locally: Google sign-in (verified with the owner's real account), ledger CRUD, part payments, totals, read-only sharing by email, sign-out. Development now runs on a **local Postgres**; Neon is production only. Typecheck, lint and `next build` pass. Not deployed yet. All work is committed and pushed to `origin/main`. Production DB is on migration `2_entry_address`.
+Works end-to-end locally: Google sign-in (verified with the owner's real account), ledger CRUD, part payments, totals, read-only sharing by email, sign-out. Development now runs on a **local Postgres**; Neon is production only. Typecheck, lint and `next build` pass. Deployed on Vercel at https://dena-paona-final.vercel.app (owner set it up); Google sign-in there was failing on 2026-10-01, most likely env vars / Google client config — see Next up. All work is committed and pushed to `origin/main`. Production DB is on migration `2_entry_address`.
 
 ## ✅ Recently done
+- Public `/privacy` and `/terms` pages (needed to publish the Google OAuth app), linked from the landing footer and the login page. Contact email is `CONTACT_EMAIL` in `src/components/legal/legal-page.tsx`.
 - Entries: optional address (`2_entry_address` migration, applied locally and to production), phone validated, WhatsApp button + tappable phone on each card; shared viewers see all details and start on the "All" filter.
 - Local dev database: Homebrew `postgresql@17`, db `dena_paona_dev`; `src/lib/prisma.ts` picks the Neon or node-postgres adapter by host; seed is local-only.
 - Auth is **Google-only** via Better Auth (`src/lib/better-auth.ts`, `src/components/auth/login-form.tsx`); magic-link email sign-in was built then removed at the owner's request.
@@ -17,9 +18,10 @@ Works end-to-end locally: Google sign-in (verified with the owner's real account
 - Nothing mid-way.
 
 ## ⏭️ Next up
-1. Deploy to Vercel: set env vars (see `docs/ai/PROJECT.md`), `BETTER_AUTH_URL` = production URL.
-2. Google Cloud Console: add `https://<prod-domain>/api/auth/callback/google` as a redirect URI, then **Publish app** (currently Testing mode — only listed test users can sign in).
+1. Get production sign-in working: Vercel `BETTER_AUTH_URL` = `https://dena-paona-final.vercel.app` (no trailing slash), `DATABASE_URL` = Neon, redeploy. Google client: origin `https://dena-paona-final.vercel.app`, redirect `https://dena-paona-final.vercel.app/api/auth/callback/google`.
+2. Publish the Google OAuth app: fill Branding (home page, `/privacy`, `/terms`, authorized domain `dena-paona-final.vercel.app`, emails), then Audience → Publish app.
 3. Profile screen to edit name and (optional) phone — there's no UI for either today.
+4. In-app "delete my account" (the privacy policy currently promises deletion on email request within 30 days).
 
 ## 🐛 Known issues
 - "Add entry" button: the `+` icon renders above the label instead of beside it. Cause: `Button` wraps children in an inline `<span>` and Tailwind makes SVGs `display:block`; fix by wrapping icon + text in `inline-flex` (done that way in `login-form.tsx`).
