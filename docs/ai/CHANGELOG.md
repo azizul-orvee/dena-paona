@@ -2,6 +2,15 @@
 
 All changes to this project, newest first. Every AI tool and human must add an entry here after each change.
 
+## 2026-10-01 — Sign-in errors say what's wrong (`/api/health`)
+**Type:** feature
+**Tool:** Claude Code
+**What changed:**
+- New `src/app/api/health/route.ts`: checks `DATABASE_URL` (set, valid `postgresql://` URL, not localhost when the site isn't local, and a real read `select 1 from users limit 1` with an 8s timeout), `BETTER_AUTH_URL` (exactly equals the site's origin from `x-forwarded-host`/`-proto`), `BETTER_AUTH_SECRET` (≥32 chars), Google vars (set, client id shape). DB errors are unpacked from Prisma's `code`/`meta`/`cause` and mapped to hints (ECONNREFUSED, ENOTFOUND, 28P01, 3D000, timeout, missing tables). Returns 503 and logs `[health] setup problem` on failure
+- `src/components/auth/login-form.tsx`: failed "Continue with Google" shows the HTTP status/message and a "Setup problem found" list from `/api/health`
+**Why:** Production sign-in failed with "Couldn't reach Google just now" and gave no clue; owner asked for the error to show when it's a database issue.
+**Notes / gotchas:** Tested locally: healthy → 200 all ok; faked production host headers → flags localhost `DATABASE_URL` and wrong `BETTER_AUTH_URL`; stopped local Postgres → banner shows "Couldn't start Google sign-in (500)" + "code ECONNREFUSED — nothing is accepting connections…". Postgres restarted afterwards. No production requests made.
+
 ## 2026-10-01 — Privacy Policy and Terms pages
 **Type:** content
 **Tool:** Claude Code

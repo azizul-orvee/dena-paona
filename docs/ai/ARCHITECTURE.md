@@ -42,6 +42,7 @@ src/
 | `/` | `src/app/page.tsx` | Landing page; signed-in users → `/app` |
 | `/login` | `src/app/(auth)/login/page.tsx` | "Continue with Google"; shows `?error=` messages; honours `?next=` (same-site paths only) |
 | `/register` | `src/app/(auth)/register/page.tsx` | Redirects to `/login` (old links) |
+| `/api/health` | `src/app/api/health/route.ts` | Public setup diagnostics JSON: DB reachable (`select 1 from users`), `BETTER_AUTH_URL` matches the site, secret length, Google vars. No secrets returned, no writes. 503 + `console.error` when something fails |
 | `/privacy` | `src/app/privacy/page.tsx` | Public Privacy Policy (linked from Google's consent screen, landing footer, login) |
 | `/terms` | `src/app/terms/page.tsx` | Public Terms of Service (same) |
 | `/app` | `src/app/app/page.tsx` | Overview: net position, totals, by-person strip, recent entries |

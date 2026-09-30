@@ -66,3 +66,8 @@ Why things are the way they are. Newest first.
 **Context:** Owner is opening sign-up to strangers and asked whether Google-only is too restrictive.
 **Decision:** Keep Google-only (the owner's standing decision). Target users are mostly on Android, where a Google account is effectively universal; it avoids passwords, email delivery and OTP costs.
 **Consequences:** Revisit only if real users ask for another option; phone OTP is the likeliest candidate for Bangladesh but costs money per SMS.
+
+## 2026-10-01 — Public `/api/health` setup diagnostics
+**Context:** Production sign-in failed with a generic banner and nobody could see why without Vercel log access.
+**Decision:** A public, read-only endpoint that reports which env var or database check fails, with plain-English fixes; the login form calls it on a failed sign-in. It never returns secret values (DB errors are scrubbed of connection strings) and bypasses Better Auth so it writes nothing (no rate-limit rows).
+**Consequences:** Anyone can see *whether* the setup is broken and non-secret config such as the `BETTER_AUTH_URL` value and the Neon endpoint id. Acceptable for this app; lock it down or remove it if that ever matters.

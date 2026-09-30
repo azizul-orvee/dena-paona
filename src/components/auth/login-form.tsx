@@ -16,10 +16,12 @@ type Props = {
 
 export function LoginForm({ callbackURL, googleEnabled, initialError }: Props) {
   const [error, setError] = useState<string | null>(initialError);
+  const [problems, setProblems] = useState<string[]>([]);
   const [pending, setPending] = useState(false);
 
   async function signInWithGoogle() {
     setError(null);
+    setProblems([]);
     setPending(true);
     const { error: oauthError } = await authClient.signIn.social({
       provider: "google",
@@ -29,7 +31,10 @@ export function LoginForm({ callbackURL, googleEnabled, initialError }: Props) {
     // On success the browser is already navigating to Google.
     if (oauthError) {
       setPending(false);
-      setError("Couldn't reach Google just now. Please try again.");
+      setError(
+        `Couldn't start Google sign-in (${oauthError.status}${oauthError.message ? `: ${oauthError.message}` : ""}).`,
+      );
+      setProblems(await findSetupProblems());
     }
   }
 
@@ -64,6 +69,18 @@ export function LoginForm({ callbackURL, googleEnabled, initialError }: Props) {
               className="mb-5 overflow-hidden rounded-xl border border-dena-500/25 bg-dena-500/10 px-4 py-3 text-[0.8125rem] leading-relaxed text-dena-300"
             >
               {error}
+              {problems.length > 0 ? (
+                <span className="mt-2 block">
+                  <span className="block font-medium">Setup problem found:</span>
+                  <span className="mt-1 block space-y-1">
+                    {problems.map((p) => (
+                      <span key={p} className="block">
+                        • {p}
+                      </span>
+                    ))}
+                  </span>
+                </span>
+              ) : null}
             </motion.p>
           ) : null}
         </AnimatePresence>
@@ -105,6 +122,24 @@ export function LoginForm({ callbackURL, googleEnabled, initialError }: Props) {
       </motion.div>
     </div>
   );
+}
+
+/**
+ * Asks /api/health which part of the setup is broken (database, env vars),
+ * so a failed sign-in says why instead of a generic error.
+ */
+async function findSetupProblems(): Promise<string[]> {
+  try {
+    const res = await fetch("/api/health", { cache: "no-store" });
+    const body = (await res.json()) as {
+      checks: Record<string, { ok: boolean; detail: string }>;
+    };
+    return Object.values(body.checks)
+      .filter((c) => !c.ok)
+      .map((c) => c.detail);
+  } catch {
+    return ["The server didn't answer the health check — see Vercel → Logs."];
+  }
 }
 
 /** Google's "G", as its sign-in branding guidelines ask for. */
