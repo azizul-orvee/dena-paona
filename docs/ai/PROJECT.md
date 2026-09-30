@@ -41,6 +41,7 @@ npm run dev                      # http://localhost:3000
 | `npm run db:generate` | `prisma generate` → `src/generated/prisma` |
 | `npm run db:migrate` | `prisma migrate deploy` (apply checked-in migrations) |
 | `npm run db:migrate:dev` | `prisma migrate dev` (create a new migration in dev) |
+| `npm run db:migrate:prod` | `scripts/migrate-prod.mjs`: shows pending migrations on **production** (from `PROD_DATABASE_URL`), applies only after typing `yes`. Owner-run / owner-approved only |
 | `npm run db:studio` | Prisma Studio DB browser |
 | `npm run seed` | Demo data into the local DB (`scripts/seed.mjs`); `SEED_EMAIL=` makes "Ayesha" your Google account; refuses Neon hosts |
 | `npm run icons` | Regenerate logo / favicons / PWA icons (`scripts/generate-icons.mjs`) |
@@ -60,11 +61,11 @@ npm run dev                      # http://localhost:3000
 `.env.example` documents each one with where to get it. If the Google pair is missing, the login button is disabled and nobody can sign in.
 
 ## Deployment
-Not deployed yet. Plan: import the GitHub repo into Vercel (Next.js preset, no `vercel.json`), set the env vars above for Production, set `BETTER_AUTH_URL` to the production URL, and apply migrations to production before any deploy that changes the schema — only when the owner asks: `DATABASE_URL="$PROD_DATABASE_URL" npx prisma migrate deploy`. `postinstall` generates the Prisma client during the Vercel build. TODO: confirm with user — production domain and Vercel project.
+Not deployed yet. Plan: import the GitHub repo into Vercel (Next.js preset, no `vercel.json`), set the env vars above for Production, set `BETTER_AUTH_URL` to the production URL, and apply migrations to production before any deploy that changes the schema — only when the owner asks: `npm run db:migrate:prod` (outside the Claude Code sandbox). Don't use `DATABASE_URL="$PROD_DATABASE_URL" …` — that variable only lives in `.env.local`, not the shell. `postinstall` generates the Prisma client during the Vercel build. TODO: confirm with user — production domain and Vercel project.
 
 ## External accounts / dashboards
 - **GitHub:** `github.com/azizul-orvee/dena-paona`
-- **Neon (production):** project database `neondb`, endpoint `ep-spring-bar-b3tb68e9` (ap-southeast-1). Holds the owner's real account; migrations `0_init` + `1_better_auth` applied.
+- **Neon (production):** project database `neondb`, endpoint `ep-spring-bar-b3tb68e9` (ap-southeast-1). Holds the owner's real account; migrations `0_init`, `1_better_auth` and `2_entry_address` applied (last one on 2026-10-01, owner-requested).
 - **Local dev DB:** Homebrew `postgresql@17` service, database `dena_paona_dev`, trust auth for the Mac user (no password). The Neon project also has a `neon_auth` schema (Neon's own hosted auth) that this app does not use.
 - **Google Cloud Console:** OAuth client (Web application) with redirect URI `http://localhost:3000/api/auth/callback/google`. Consent screen is in **Testing** mode.
 - **Vercel:** TODO: confirm with user.

@@ -108,12 +108,14 @@ export function EntryFormModal({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
-            label="Their phone"
+            label="Phone (optional)"
             name="personPhone"
             type="tel"
             inputMode="tel"
+            autoComplete="off"
             defaultValue={sent.personPhone ?? entry?.personPhone ?? ""}
-            placeholder="Optional"
+            placeholder="01712345678"
+            hint="Adds a WhatsApp button to the entry."
             error={fieldErrors.personPhone}
           />
           <Field
@@ -124,6 +126,16 @@ export function EntryFormModal({
             error={fieldErrors.dueDate}
           />
         </div>
+
+        <Field
+          label="Address (optional)"
+          name="personAddress"
+          autoComplete="off"
+          defaultValue={sent.personAddress ?? entry?.personAddress ?? ""}
+          placeholder="e.g. House 12, Road 5, Dhanmondi"
+          maxLength={200}
+          error={fieldErrors.personAddress}
+        />
 
         <Textarea
           label="Note"

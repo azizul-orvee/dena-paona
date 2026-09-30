@@ -4,7 +4,7 @@
 ```
 prisma/
 ├── schema.prisma          ← data model (source of truth)
-└── migrations/            ← checked-in SQL: 0_init (baseline), 1_better_auth
+└── migrations/            ← checked-in SQL: 0_init (baseline), 1_better_auth, 2_entry_address
 prisma.config.ts           ← Prisma CLI config (loads .env.local, migration URL)
 scripts/
 ├── seed.mjs               ← local-only demo data via raw SQL (`pg`); refuses Neon hosts
@@ -51,7 +51,7 @@ src/
 Schema: `prisma/schema.prisma`. All ids are Postgres `uuid` (`gen_random_uuid()`).
 - **User** (`users`) — `name`, `email` (unique, required: the account + sharing handle), `emailVerified`, `image`, `phone` (optional, unique, currently no UI to set it), timestamps.
 - **Session** (`sessions`), **Account** (`accounts`, one row per linked provider — `google`), **Verification** (`verifications`, OAuth state), **RateLimit** (`rate_limits`) — Better Auth tables, all cascade-deleted with the user.
-- **Entry** (`entries`) — `ownerId → users`, `kind` enum `entry_kind` (`dena`|`paona`), `personName`, `personPhone?`, `amount`/`amountPaid` `numeric(14,2)`, `note?`, `dueDate?` (`date`), `settledAt?`. An entry is open while `settledAt` is null.
+- **Entry** (`entries`) — `ownerId → users`, `kind` enum `entry_kind` (`dena`|`paona`), `personName` (required), `personPhone?` (validated `+?\d{6,15}` after stripping spaces/dashes; drives the WhatsApp link), `personAddress?` (`varchar(200)`), `amount` (required)/`amountPaid` `numeric(14,2)`, `note?`, `dueDate?` (`date`), `settledAt?`. An entry is open while `settledAt` is null.
 - **WalletShare** (`wallet_shares`) — `ownerId → users`, `viewerId → users`; unique `(owner_id, viewer_id)`; DB CHECK `wallet_shares_no_self` (owner ≠ viewer), which exists only in migration SQL because Prisma can't express it.
 
 ## Data flow
@@ -73,6 +73,7 @@ Schema: `prisma/schema.prisma`. All ids are Postgres `uuid` (`gen_random_uuid()`
 - `src/lib/better-auth.ts` — the whole auth configuration; `onAPIError.errorURL = "/login"`.
 - `src/lib/auth.ts` — `getCurrentUser()` / `requireUser()`; every page and action goes through these.
 - `src/server/queries.ts` — read paths and `getAuthorisedWalletOwner()` (the only gate for viewing someone else's wallet; also rejects malformed uuids).
+- `src/components/app/entry-card.tsx` — shows phone (`tel:` link), a WhatsApp button (`whatsappUrl()` in `src/lib/utils.ts`) and address; these render for shared viewers too, while edit/settle/delete stay owner-only.
 - `src/server/actions/entries.ts` — create/update/delete/settle/part-payment; update re-opens an entry if the new amount exceeds what's paid (in a transaction).
 - `src/server/actions/shares.ts` — grant by email (case-insensitive), revoke, leave.
 - `src/lib/prisma.ts` — lazy client behind a Proxy so `next build` needs no DB credentials; picks the driver adapter from the `DATABASE_URL` host.

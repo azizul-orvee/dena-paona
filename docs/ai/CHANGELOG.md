@@ -2,6 +2,37 @@
 
 All changes to this project, newest first. Every AI tool and human must add an entry here after each change.
 
+## 2026-10-01 — Production DB migrated to `2_entry_address`
+**Type:** deploy
+**Tool:** Claude Code
+**What changed:**
+- Ran `npm run db:migrate:prod` against production Neon (`ep-spring-bar-b3tb68e9`, `neondb`): applied `2_entry_address` (adds nullable `entries.person_address`)
+**Why:** Owner explicitly asked to update the production database, then commit and push.
+**Notes / gotchas:** Additive, nullable column — no existing rows changed. Verified afterwards with `prisma migrate diff` against production: no drift. No data was written.
+
+## 2026-10-01 — `npm run db:migrate:prod` for production migrations
+**Type:** config
+**Tool:** Claude Code
+**What changed:**
+- New `scripts/migrate-prod.mjs` + `db:migrate:prod` script in `package.json`: loads `PROD_DATABASE_URL` from `.env.local`, refuses non-Neon hosts, runs `prisma migrate status`, and runs `prisma migrate deploy` only after the user types `yes`
+- `docs/ai/PROJECT.md`, `docs/ai/STATUS.md`: replaced the old `DATABASE_URL="$PROD_DATABASE_URL" …` instruction, which never worked from a shell
+**Why:** Owner needed a working way to apply migrations to production.
+**Notes / gotchas:** Tested with "no" as the answer: read-only `migrate status` against production reported `2_entry_address` pending; nothing was applied. Works because shell env vars take priority over `.env.local` in `prisma.config.ts`.
+
+## 2026-10-01 — Entry address, WhatsApp button, full detail for shared viewers
+**Type:** feature
+**Tool:** Claude Code
+**What changed:**
+- New nullable column `entries.person_address varchar(200)`: `prisma/schema.prisma` (`personAddress`), migration `prisma/migrations/2_entry_address` (applied to the **local** DB only; no drift)
+- `src/lib/validation.ts`: name + amount stay required; phone optional but must look like a phone number (`+?` and 6–15 digits after stripping spaces, dashes, brackets, dots); address optional, max 200
+- `src/server/actions/entries.ts`, `src/server/queries.ts` (`EntryRow.personAddress`, raw SQL select): save/read the address
+- `src/components/app/entry-form.tsx`: "Phone (optional)" with a WhatsApp hint, new "Address (optional)" field
+- `src/components/app/entry-card.tsx`: contact row with tappable phone (`tel:`), green WhatsApp button (`wa.me`, new tab) and address; full note on hover. Shown to shared viewers too
+- `src/lib/utils.ts`: `whatsappUrl()` (BD `01…` → `8801…`)
+- `src/components/app/ledger.tsx`: search also matches phone and address; read-only (shared) ledgers default to the "All" filter so settled entries are visible
+**Why:** Owner asked for name + amount as required, phone + address optional, a WhatsApp button from the phone, and for shared viewers to see everything.
+**Notes / gotchas:** Verified in the browser at mobile width with local test sessions for seeded Ayesha (owner) and Rahim (viewer): empty submit → name + amount errors only; `abc123` phone rejected; `017 1234-5678` saved and linked to `https://wa.me/8801712345678`; Rahim saw phone, WhatsApp, address and settled entries with no edit controls. Cleanup: deleted the test entry "Claude Test Karim" and both test sessions from the local DB (verified 0 left). Production was not touched. **Production still needs `2_entry_address` applied before this code deploys.**
+
 ## 2026-09-28 — Local Postgres dev database; Neon is production only
 **Type:** config
 **Tool:** Claude Code

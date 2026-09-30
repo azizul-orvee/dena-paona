@@ -12,6 +12,7 @@ export type EntryRow = {
   kind: "dena" | "paona";
   personName: string;
   personPhone: string | null;
+  personAddress: string | null;
   amount: string;
   amountPaid: string;
   note: string | null;
@@ -96,6 +97,7 @@ export async function getEntries(
       kind: "dena" | "paona";
       person_name: string;
       person_phone: string | null;
+      person_address: string | null;
       amount: string;
       amount_paid: string;
       note: string | null;
@@ -105,7 +107,7 @@ export async function getEntries(
     }>
   >`
     select
-      id, kind, person_name, person_phone,
+      id, kind, person_name, person_phone, person_address,
       amount::text as amount, amount_paid::text as amount_paid,
       note, to_char(due_date, 'YYYY-MM-DD') as due_date,
       settled_at, created_at
@@ -119,6 +121,7 @@ export async function getEntries(
     kind: row.kind,
     personName: row.person_name,
     personPhone: row.person_phone,
+    personAddress: row.person_address,
     amount: row.amount,
     amountPaid: row.amount_paid,
     note: row.note,

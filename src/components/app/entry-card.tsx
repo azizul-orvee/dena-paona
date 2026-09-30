@@ -7,7 +7,10 @@ import {
   CalendarClock,
   Check,
   HandCoins,
+  MapPin,
+  MessageCircle,
   Pencil,
+  Phone,
   RotateCcw,
   StickyNote,
   Trash2,
@@ -17,7 +20,14 @@ import { useTransition } from "react";
 import { springSnappy } from "@/components/motion/primitives";
 import { useToast } from "@/components/ui/toast";
 import { formatMoney, round2, toNumber } from "@/lib/money";
-import { cn, hueFromString, initials, isOverdue, relativeDay } from "@/lib/utils";
+import {
+  cn,
+  hueFromString,
+  initials,
+  isOverdue,
+  relativeDay,
+  whatsappUrl,
+} from "@/lib/utils";
 import {
   deleteEntryAction,
   toggleSettledAction,
@@ -49,6 +59,7 @@ export function EntryCard({
   const hue = hueFromString(entry.personName.toLowerCase());
 
   const accent = isPaona ? "paona" : "dena";
+  const whatsapp = whatsappUrl(entry.personPhone);
 
   function runToggle() {
     const form = new FormData();
@@ -216,13 +227,51 @@ export function EntryCard({
             {entry.note ? (
               <span className="inline-flex min-w-0 items-center gap-1">
                 <StickyNote className="h-3 w-3 shrink-0" />
-                <span className="truncate">{entry.note}</span>
+                <span className="truncate" title={entry.note}>
+                  {entry.note}
+                </span>
               </span>
             ) : null}
             {!entry.dueDate && !entry.note ? (
               <span>added {relativeDay(entry.createdAt)}</span>
             ) : null}
           </div>
+
+          {/* Contact details — shown to shared viewers too */}
+          {entry.personPhone || entry.personAddress ? (
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[0.75rem]">
+              {entry.personPhone ? (
+                <a
+                  href={`tel:${entry.personPhone}`}
+                  aria-label={`Call ${entry.personName}`}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-fg-muted ring-1 ring-inset ring-white/10 transition-colors hover:bg-white/10 hover:text-fg"
+                >
+                  <Phone className="h-3 w-3" />
+                  <span className="tnum">{entry.personPhone}</span>
+                </a>
+              ) : null}
+              {whatsapp ? (
+                <a
+                  href={whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Message ${entry.personName} on WhatsApp`}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366]/12 px-2.5 py-1 font-medium text-[#4ade80] ring-1 ring-inset ring-[#25D366]/30 transition-colors hover:bg-[#25D366]/20"
+                >
+                  <MessageCircle className="h-3 w-3" />
+                  WhatsApp
+                </a>
+              ) : null}
+              {entry.personAddress ? (
+                <span className="inline-flex min-w-0 max-w-full items-center gap-1 px-1 text-fg-subtle">
+                  <MapPin className="h-3 w-3 shrink-0" />
+                  <span className="truncate" title={entry.personAddress}>
+                    {entry.personAddress}
+                  </span>
+                </span>
+              ) : null}
+            </div>
+          ) : null}
 
           {/* Part-payment progress */}
           {!settled && paid > 0 ? (

@@ -14,9 +14,19 @@ export const entrySchema = z.object({
   personPhone: z
     .string()
     .trim()
-    .max(24)
+    .max(24, "That phone number is too long")
     .optional()
-    .transform((v) => (v ? v.replace(/[\s-]/g, "") : null)),
+    .transform((v) => (v ? v.replace(/[\s\-().]/g, "") : null))
+    .refine(
+      (v) => v === null || /^\+?\d{6,15}$/.test(v),
+      "Enter a valid phone number, e.g. 01712345678",
+    ),
+  personAddress: z
+    .string()
+    .trim()
+    .max(200, "Keep the address under 200 characters")
+    .optional()
+    .transform((v) => (v ? v : null)),
   amount: z
     .string()
     .trim()

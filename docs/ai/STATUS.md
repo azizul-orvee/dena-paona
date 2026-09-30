@@ -1,9 +1,10 @@
-# Status — last updated 2026-09-28
+# Status — last updated 2026-10-01
 
 ## Current state
-Works end-to-end locally: Google sign-in (verified with the owner's real account), ledger CRUD, part payments, totals, read-only sharing by email, sign-out. Development now runs on a **local Postgres**; Neon is production only. Typecheck, lint and `next build` pass. Not deployed yet. Committed on `main` up to `760598a first`; the docs and the local-DB change are uncommitted.
+Works end-to-end locally: Google sign-in (verified with the owner's real account), ledger CRUD, part payments, totals, read-only sharing by email, sign-out. Development now runs on a **local Postgres**; Neon is production only. Typecheck, lint and `next build` pass. Not deployed yet. All work is committed and pushed to `origin/main`. Production DB is on migration `2_entry_address`.
 
 ## ✅ Recently done
+- Entries: optional address (`2_entry_address` migration, applied locally and to production), phone validated, WhatsApp button + tappable phone on each card; shared viewers see all details and start on the "All" filter.
 - Local dev database: Homebrew `postgresql@17`, db `dena_paona_dev`; `src/lib/prisma.ts` picks the Neon or node-postgres adapter by host; seed is local-only.
 - Auth is **Google-only** via Better Auth (`src/lib/better-auth.ts`, `src/components/auth/login-form.tsx`); magic-link email sign-in was built then removed at the owner's request.
 - Moved from Drizzle to Prisma 7 across the whole app (`prisma/schema.prisma`, `src/lib/prisma.ts`, `src/server/*`).
@@ -28,6 +29,7 @@ Works end-to-end locally: Google sign-in (verified with the owner's real account
 - `requireUser()` redirects to `/login` without `?next=`; only `src/proxy.ts` preserves the return path.
 
 ## ⚠️ Watch out
+- WhatsApp links assume BD numbers when there's no country code (`01…` → `880…`); foreign numbers need `+<code>`.
 - **Hard rules (AGENTS.md):** no `git commit`/`git push` unless explicitly asked; production DB is read-only.
 - `DATABASE_URL` in `.env.local` = local dev DB (`localhost`). The production Neon URL sits in `PROD_DATABASE_URL`, which nothing reads — don't use it unless asked.
 - Local Postgres must be running (`brew services start postgresql@17`) or every page errors with a connection failure.

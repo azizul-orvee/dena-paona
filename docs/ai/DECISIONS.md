@@ -51,3 +51,13 @@ Why things are the way they are. Newest first.
 **Context:** On Vercel, in-memory counters reset per serverless instance.
 **Decision:** Better Auth `rateLimit.storage = "database"` (`rate_limits` table), enabled in dev too.
 **Consequences:** One extra DB write per auth request.
+
+## 2026-10-01 — WhatsApp links assume Bangladeshi local numbers
+**Context:** WhatsApp's `wa.me/<number>` needs the full international number, but users type local numbers like `01712345678`.
+**Decision:** `whatsappUrl()` (`src/lib/utils.ts`) turns `01XXXXXXXXX` into `8801XXXXXXXXX`, drops a leading `+` or `00`, and otherwise uses the digits as typed. The phone is stored as entered (minus spaces/dashes), not normalised.
+**Consequences:** A local number from another country without its country code produces a wrong link; typing it with `+<code>` fixes it.
+
+## 2026-10-01 — Shared viewers see everything, starting on "All"
+**Context:** Owner wants people they share with to see the whole ledger.
+**Decision:** Viewers get every entry field (phone, WhatsApp, address, note, due date, part payments). The read-only ledger starts on the "All" filter instead of "Open" (`src/components/app/ledger.tsx`) so settled entries aren't hidden.
+**Consequences:** Sharing now exposes counterparties' phone numbers and addresses to viewers — that is intentional.

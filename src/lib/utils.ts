@@ -60,3 +60,17 @@ export function isOverdue(dueDate: string | null, settledAt: Date | null) {
   const due = new Date(`${dueDate}T23:59:59`);
   return due.getTime() < Date.now();
 }
+
+/**
+ * wa.me link for a stored phone number, or null if it can't be one.
+ * WhatsApp needs the full international number without "+" or a leading 0,
+ * so local Bangladeshi numbers (01XXXXXXXXX) get the 880 country code.
+ */
+export function whatsappUrl(phone: string | null | undefined) {
+  if (!phone) return null;
+  let digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  else if (/^01\d{9}$/.test(digits)) digits = `88${digits}`;
+  if (digits.length < 8 || digits.length > 15) return null;
+  return `https://wa.me/${digits}`;
+}

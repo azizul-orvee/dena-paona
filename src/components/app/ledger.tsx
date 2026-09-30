@@ -44,7 +44,8 @@ export function Ledger({
   showAddButton?: boolean;
 }) {
   const reduce = useReducedMotion();
-  const [status, setStatus] = useState<StatusFilter>("open");
+  // Viewers of a shared wallet start on "All" so nothing is hidden from them.
+  const [status, setStatus] = useState<StatusFilter>(readOnly ? "all" : "open");
   const [sort, setSort] = useState<SortKey>("recent");
   const [query, setQuery] = useState("");
   const [showSort, setShowSort] = useState(false);
@@ -62,7 +63,9 @@ export function Ledger({
       if (!q) return true;
       return (
         e.personName.toLowerCase().includes(q) ||
-        (e.note?.toLowerCase().includes(q) ?? false)
+        (e.note?.toLowerCase().includes(q) ?? false) ||
+        (e.personPhone?.includes(q) ?? false) ||
+        (e.personAddress?.toLowerCase().includes(q) ?? false)
       );
     });
 
@@ -128,7 +131,7 @@ export function Ledger({
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search name or note…"
+            placeholder="Search name, phone, note…"
             aria-label="Search entries"
             className="h-10 w-full rounded-full border border-white/8 bg-ink-850/60 pl-10 pr-4 text-[0.8125rem] outline-none transition-all placeholder:text-fg-subtle/70 hover:border-white/15 focus:border-brand-400/60 focus:shadow-[0_0_0_4px_rgb(124_92_255/0.12)]"
           />
