@@ -45,7 +45,7 @@ src/
 | `/api/health` | `src/app/api/health/route.ts` | Public setup diagnostics JSON: DB reachable (`select 1 from users`), `BETTER_AUTH_URL` matches the site, secret length, Google vars. No secrets returned, no writes. 503 + `console.error` when something fails |
 | `/privacy` | `src/app/privacy/page.tsx` | Public Privacy Policy (linked from Google's consent screen, landing footer, login) |
 | `/terms` | `src/app/terms/page.tsx` | Public Terms of Service (same) |
-| `/app` | `src/app/app/page.tsx` | Overview: net position, totals, by-person strip, recent entries |
+| `/app` | `src/app/app/page.tsx` | Home: total paona + total dena cards (`TotalsGrid`, never netted), recent entries |
 | `/app/dena`, `/app/paona` | `src/app/app/{dena,paona}/page.tsx` | One side of the ledger (`KindPage`) |
 | `/app/shared` | `src/app/app/shared/page.tsx` | Grant/revoke read access by email; wallets shared with me |
 | `/app/shared/[ownerId]` (+ `/dena`, `/paona`) | `src/app/app/shared/[ownerId]/…` | Read-only view of another user's wallet |

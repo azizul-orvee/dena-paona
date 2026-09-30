@@ -2,6 +2,18 @@
 
 All changes to this project, newest first. Every AI tool and human must add an entry here after each change.
 
+## 2026-10-01 — Plain totals instead of a net "overview"; no "Settled so far"
+**Type:** feature
+**Tool:** Claude Code
+**What changed:**
+- `src/components/app/summary.tsx`: removed `BalanceHero` (net position number + paona/dena % bar). `TotalsGrid` now shows "Total paona" / "Total dena" (open amounts, never netted), dropped the "৳… settled" line, takes `ownerLabel` for shared wallets, and shows a zero state instead of ৳0 — "Debt-free" (party-popper icon) for dena, "Nothing to collect" for paona
+- `src/components/app/kind-summary.tsx`: removed the "Settled so far" stat (now just Open entries + Total records); same zero-state message on the Dena/Paona pages ("Debt-free" / "All collected")
+- `src/app/app/page.tsx`: dropped the net hero and the "By person" net strip; nav label and page title "Overview" → "Home" (`src/components/app/nav.tsx`)
+- `src/app/app/shared/[ownerId]/page.tsx`: same totals cards, third-person copy
+- Removed `src/components/app/people-strip.tsx` and `getPeopleSummary`; `WalletTotals` in `src/server/queries.ts` lost `net`, `denaSettled`, `paonaSettled` (query no longer sums settled amounts)
+**Why:** Owner found the netting confusing (dena ৳2,500 + paona ৳2,000 to the same person showed up as a single "you owe ৳500" figure) and asked for plain totals, no "Settled so far", and a nice message when there's no dena.
+**Notes / gotchas:** Verified in the browser with a local test session for seeded Rahim + two "Claude Test Jahid" entries (dena 2500, paona 2000 → cards show both totals separately), and with Rahim's dena temporarily settled to see the "Debt-free" state on Home and `/app/dena`. Cleanup: restored Rahim's seeded dena to open, deleted the test entries and test session from the local DB (verified 0 left). Production not touched.
+
 ## 2026-10-01 — Sign-in errors say what's wrong (`/api/health`)
 **Type:** feature
 **Tool:** Claude Code

@@ -71,3 +71,8 @@ Why things are the way they are. Newest first.
 **Context:** Production sign-in failed with a generic banner and nobody could see why without Vercel log access.
 **Decision:** A public, read-only endpoint that reports which env var or database check fails, with plain-English fixes; the login form calls it on a failed sign-in. It never returns secret values (DB errors are scrubbed of connection strings) and bypasses Better Auth so it writes nothing (no rate-limit rows).
 **Consequences:** Anyone can see *whether* the setup is broken and non-secret config such as the `BETTER_AUTH_URL` value and the Neon endpoint id. Acceptable for this app; lock it down or remove it if that ever matters.
+
+## 2026-10-01 — Dena and paona totals are never netted
+**Context:** Home showed one "net position" (paona − dena) plus a per-person net strip. The owner had dena ৳2,500 and paona ৳2,000 with the same person and couldn't make sense of the single ৳500 figure.
+**Decision:** Show total dena and total paona as two separate sums of open amounts; no net number anywhere, no per-person netting, no "Settled so far". When a side is zero, show a friendly message instead of ৳0.
+**Consequences:** Users do the offset in their head if they want it. Don't reintroduce a net figure without asking the owner.

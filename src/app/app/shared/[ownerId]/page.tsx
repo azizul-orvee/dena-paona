@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Eye } from "lucide-react";
 
-import { BalanceHero, TotalsGrid } from "@/components/app/summary";
+import { TotalsGrid } from "@/components/app/summary";
 import { Ledger } from "@/components/app/ledger";
 import { SectionHeading } from "@/components/app/section-heading";
 import { requireUser } from "@/lib/auth";
@@ -64,9 +64,11 @@ export default async function SharedWalletPage({ params }: Props) {
         </p>
       </div>
 
-      <BalanceHero totals={totals} ownerLabel={firstName} />
-
-      <TotalsGrid totals={totals} basePath={`/app/shared/${owner.id}`} />
+      <TotalsGrid
+        totals={totals}
+        basePath={`/app/shared/${owner.id}`}
+        ownerLabel={firstName}
+      />
 
       <section>
         <SectionHeading

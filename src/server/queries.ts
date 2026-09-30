@@ -24,11 +24,8 @@ export type EntryRow = {
 export type WalletTotals = {
   denaOutstanding: number;
   paonaOutstanding: number;
-  denaSettled: number;
-  paonaSettled: number;
   denaCount: number;
   paonaCount: number;
-  net: number;
 };
 
 /**
@@ -40,14 +37,12 @@ export async function getWalletTotals(ownerId: string): Promise<WalletTotals> {
     Array<{
       kind: "dena" | "paona";
       outstanding: string;
-      settled_sum: string;
       open_count: number;
     }>
   >`
     select
       kind,
       coalesce(sum(case when settled_at is null then amount - amount_paid else 0 end), 0)::text as outstanding,
-      coalesce(sum(case when settled_at is not null then amount else 0 end), 0)::text as settled_sum,
       (count(*) filter (where settled_at is null))::int as open_count
     from entries
     where owner_id = ${ownerId}::uuid
@@ -56,26 +51,19 @@ export async function getWalletTotals(ownerId: string): Promise<WalletTotals> {
   const totals: WalletTotals = {
     denaOutstanding: 0,
     paonaOutstanding: 0,
-    denaSettled: 0,
-    paonaSettled: 0,
     denaCount: 0,
     paonaCount: 0,
-    net: 0,
   };
 
   for (const row of rows) {
     if (row.kind === "dena") {
       totals.denaOutstanding = toNumber(row.outstanding);
-      totals.denaSettled = toNumber(row.settled_sum);
       totals.denaCount = Number(row.open_count);
     } else {
       totals.paonaOutstanding = toNumber(row.outstanding);
-      totals.paonaSettled = toNumber(row.settled_sum);
       totals.paonaCount = Number(row.open_count);
     }
   }
-
-  totals.net = totals.paonaOutstanding - totals.denaOutstanding;
   return totals;
 }
 
@@ -129,38 +117,6 @@ export async function getEntries(
     settledAt: row.settled_at,
     createdAt: row.created_at,
   }));
-}
-
-/** Per-counterparty rollup used by the "people" view. */
-export async function getPeopleSummary(ownerId: string) {
-  const rows = await prisma.entry.groupBy({
-    by: ["personName", "kind"],
-    where: { ownerId, settledAt: null },
-    _sum: { amount: true, amountPaid: true },
-    _count: { _all: true },
-  });
-
-  const map = new Map<
-    string,
-    { name: string; dena: number; paona: number; openCount: number }
-  >();
-
-  for (const row of rows) {
-    const key = row.personName.toLowerCase();
-    const current =
-      map.get(key) ?? { name: row.personName, dena: 0, paona: 0, openCount: 0 };
-    const outstanding =
-      toNumber(row._sum.amount?.toString()) -
-      toNumber(row._sum.amountPaid?.toString());
-    if (row.kind === "dena") current.dena += outstanding;
-    else current.paona += outstanding;
-    current.openCount += row._count._all;
-    map.set(key, current);
-  }
-
-  return [...map.values()]
-    .map((p) => ({ ...p, net: p.paona - p.dena }))
-    .sort((a, b) => Math.abs(b.net) - Math.abs(a.net));
 }
 
 /** Wallets this user has been given read access to. */

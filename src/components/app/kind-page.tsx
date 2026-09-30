@@ -40,7 +40,6 @@ export function KindPage({
       };
 
   const outstanding = isPaona ? totals.paonaOutstanding : totals.denaOutstanding;
-  const settled = isPaona ? totals.paonaSettled : totals.denaSettled;
   const openCount = isPaona ? totals.paonaCount : totals.denaCount;
 
   return (
@@ -66,7 +65,6 @@ export function KindPage({
       <KindSummary
         kind={kind}
         outstanding={outstanding}
-        settled={settled}
         openCount={openCount}
         entryCount={entries.length}
       />

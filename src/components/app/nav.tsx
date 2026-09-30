@@ -13,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { href: "/app", label: "Overview", icon: LayoutDashboard, exact: true },
+  { href: "/app", label: "Home", icon: LayoutDashboard, exact: true },
   { href: "/app/paona", label: "Paona", icon: ArrowDownLeft, exact: false },
   { href: "/app/dena", label: "Dena", icon: ArrowUpRight, exact: false },
   { href: "/app/shared", label: "Shared", icon: Users, exact: false },

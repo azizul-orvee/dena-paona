@@ -1,22 +1,20 @@
 import type { Metadata } from "next";
 
-import { BalanceHero, TotalsGrid } from "@/components/app/summary";
+import { TotalsGrid } from "@/components/app/summary";
 import { Ledger } from "@/components/app/ledger";
-import { PeopleStrip } from "@/components/app/people-strip";
 import { SectionHeading } from "@/components/app/section-heading";
 import { requireUser } from "@/lib/auth";
-import { getEntries, getPeopleSummary, getWalletTotals } from "@/server/queries";
+import { getEntries, getWalletTotals } from "@/server/queries";
 
-export const metadata: Metadata = { title: "Overview" };
+export const metadata: Metadata = { title: "Home" };
 export const dynamic = "force-dynamic";
 
-export default async function OverviewPage() {
+export default async function HomePage() {
   const user = await requireUser();
 
-  const [totals, recent, people] = await Promise.all([
+  const [totals, recent] = await Promise.all([
     getWalletTotals(user.id),
     getEntries(user.id, { limit: 8 }),
-    getPeopleSummary(user.id),
   ]);
 
   const firstName = user.name.split(" ")[0];
@@ -32,19 +30,7 @@ export default async function OverviewPage() {
         </h1>
       </header>
 
-      <BalanceHero totals={totals} />
-
       <TotalsGrid totals={totals} />
-
-      {people.length > 0 ? (
-        <section>
-          <SectionHeading
-            title="By person"
-            caption="Net across everything still open"
-          />
-          <PeopleStrip people={people} />
-        </section>
-      ) : null}
 
       <section>
         <SectionHeading
