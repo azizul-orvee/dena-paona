@@ -5,7 +5,7 @@ import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Field, Textarea } from "@/components/ui/field";
+import { DateField, Field, Textarea } from "@/components/ui/field";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
 import { springSnappy } from "@/components/motion/primitives";
@@ -118,10 +118,9 @@ export function EntryFormModal({
             hint="Adds a WhatsApp button to the entry."
             error={fieldErrors.personPhone}
           />
-          <Field
-            label="Due date"
+          <DateField
+            label="Due date (optional)"
             name="dueDate"
-            type="date"
             defaultValue={sent.dueDate ?? entry?.dueDate ?? ""}
             error={fieldErrors.dueDate}
           />
@@ -138,7 +137,7 @@ export function EntryFormModal({
         />
 
         <Textarea
-          label="Note"
+          label="Note (optional)"
           name="note"
           defaultValue={sent.note ?? entry?.note ?? ""}
           placeholder="What was it for?"

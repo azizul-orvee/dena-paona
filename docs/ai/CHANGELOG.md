@@ -2,6 +2,16 @@
 
 All changes to this project, newest first. Every AI tool and human must add an entry here after each change.
 
+## 2026-10-02 — Due date picker and thumb-sized entry actions
+**Type:** fix
+**Tool:** Claude Code
+**What changed:**
+- New `DateField` in `src/components/ui/field.tsx`, used for "Due date (optional)" in `src/components/app/entry-form.tsx`: calendar icon, "No due date" placeholder, friendly date ("Thu, 15 Oct 2026"), × to clear. The native input stays underneath with transparent text so a tap anywhere opens the system picker; Android's chevron and Chrome's picker icon are hidden via `.date-input` rules in `src/app/globals.css`
+- `src/components/app/entry-card.tsx`: below `lg`, the action bar is a labelled row — solid green **✓ Mark paid** (or **Reopen** when settled) and an outlined **Payment** button on the right (44px tall), small edit/delete icons on the left. Desktop hover icons unchanged
+- "Note" label → "Note (optional)"
+**Why:** Owner: the empty due-date field showed only an ugly native chevron on Android, and the entry buttons were too small to press.
+**Notes / gotchas:** Checked in the local browser at 375px and 360px with a temporary dummy-data preview page (`src/app/zz-preview`, deleted afterwards; no DB or auth involved): labels stay on one line, no horizontal scroll, × clears the submitted `dueDate`. The Payment icon is hidden below 400px so the row fits.
+
 ## 2026-10-02 — Mobile UI polish: icon buttons, tap targets, inputs
 **Type:** fix
 **Tool:** Claude Code

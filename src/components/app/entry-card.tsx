@@ -319,11 +319,58 @@ export function EntryCard({
         </div>
       </div>
 
-      {/* Below 1024px there isn't room beside the amount, so the actions get
-          their own row and stay permanently visible (no hover on touch). */}
+      {/* Below 1024px: a thumb-sized action bar. The main action (mark paid /
+          reopen) is a labelled pill on the right where the thumb rests; edit
+          and delete stay small on the left so they're hard to hit by accident. */}
       {!readOnly ? (
-        <div className="flex justify-end gap-1 border-t border-white/6 px-2 py-1 lg:hidden">
-          {actions}
+        <div className="flex items-center gap-1 border-t border-white/6 px-2 py-2.5 lg:hidden">
+          {onEdit ? (
+            <IconButton
+              label={`Edit entry for ${entry.personName}`}
+              onClick={() => onEdit(entry)}
+            >
+              <Pencil className="h-[18px] w-[18px]" />
+            </IconButton>
+          ) : null}
+          <IconButton
+            label={`Delete entry for ${entry.personName}`}
+            onClick={runDelete}
+            accent="dena"
+          >
+            <Trash2 className="h-[18px] w-[18px]" />
+          </IconButton>
+
+          <div className="ml-auto flex min-w-0 items-center gap-2">
+            {!settled && onRecordPayment ? (
+              <motion.button
+                type="button"
+                onClick={() => onRecordPayment(entry)}
+                whileTap={{ scale: 0.96 }}
+                className="inline-flex h-11 items-center gap-1.5 whitespace-nowrap rounded-full border border-white/12 bg-white/[0.04] px-3.5 text-[0.875rem] font-medium text-fg transition-colors active:bg-white/10"
+              >
+                <HandCoins className="hidden h-4 w-4 min-[400px]:block" />
+                Payment
+              </motion.button>
+            ) : null}
+            <motion.button
+              type="button"
+              onClick={runToggle}
+              whileTap={{ scale: 0.96 }}
+              className={cn(
+                "inline-flex h-11 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[0.875rem] font-600",
+                settled
+                  ? "border border-white/12 bg-white/[0.04] text-fg-muted"
+                  : "bg-linear-to-br from-paona-400 to-paona-500 text-ink-950 shadow-[0_10px_24px_-12px_rgb(22_201_139/0.9)]",
+              )}
+            >
+              {settled ? (
+                <RotateCcw className="h-4 w-4" />
+              ) : (
+                <Check className="h-4 w-4" strokeWidth={2.75} />
+              )}
+              {settled ? "Reopen" : "Mark paid"}
+            </motion.button>
+          </div>
         </div>
       ) : null}
     </motion.article>

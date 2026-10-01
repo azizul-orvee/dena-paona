@@ -114,6 +114,21 @@
     filter: invert(0.7);
     cursor: pointer;
   }
+
+  /* DateField draws its own text and icon; the native input only takes taps.
+     The picker indicator is stretched invisibly over the whole box so a click
+     anywhere opens the calendar on desktop Chrome too. */
+  .date-input::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .date-input::-webkit-datetime-edit {
+    color: transparent;
+  }
 }
 
 /* ────────────────────────────── Utilities ──────────────────────────────── */
