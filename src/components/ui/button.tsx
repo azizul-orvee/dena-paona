@@ -78,7 +78,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {loading ? (
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
         ) : null}
-        <span className={cn("relative", loading && "opacity-90")}>
+        <span className={cn("relative inline-flex items-center gap-2", loading && "opacity-90")}>
           {children}
         </span>
       </motion.button>

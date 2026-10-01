@@ -72,7 +72,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
 
       <div
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-100 flex flex-col items-center gap-2 p-4 sm:bottom-auto sm:top-0 sm:items-end sm:p-6 sm:pt-[4.75rem]"
+        className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-100 flex flex-col items-center gap-2 p-4 sm:bottom-auto sm:top-0 sm:items-end sm:p-6 sm:pt-[4.75rem]"
         role="region"
         aria-label="Notifications"
       >

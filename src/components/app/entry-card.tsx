@@ -322,7 +322,7 @@ export function EntryCard({
       {/* Below 1024px there isn't room beside the amount, so the actions get
           their own row and stay permanently visible (no hover on touch). */}
       {!readOnly ? (
-        <div className="flex justify-end gap-0.5 border-t border-white/6 px-3 py-1.5 lg:hidden">
+        <div className="flex justify-end gap-1 border-t border-white/6 px-2 py-1 lg:hidden">
           {actions}
         </div>
       ) : null}
@@ -351,7 +351,7 @@ function IconButton({
       whileTap={{ scale: 0.9 }}
       transition={springSnappy}
       className={cn(
-        "grid h-8 w-8 place-items-center rounded-lg text-fg-subtle transition-colors",
+        "grid h-10 w-10 place-items-center rounded-xl text-fg-subtle transition-colors lg:h-8 lg:w-8 lg:rounded-lg",
         accent === "paona" && "hover:bg-paona-500/15 hover:text-paona-300",
         accent === "dena" && "hover:bg-dena-500/15 hover:text-dena-300",
         !accent && "hover:bg-white/8 hover:text-fg",

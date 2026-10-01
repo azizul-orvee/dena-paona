@@ -141,7 +141,7 @@ export function Modal({
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 400, damping: 22 }}
-                className="-mr-1 -mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-xl text-fg-subtle transition-colors hover:bg-white/8 hover:text-fg"
+                className="-mr-1 -mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-xl text-fg-subtle transition-colors hover:bg-white/8 hover:text-fg"
               >
                 <X className="h-4 w-4" />
               </motion.button>

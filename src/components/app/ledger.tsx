@@ -108,7 +108,7 @@ export function Ledger({
                 aria-selected={active}
                 onClick={() => setStatus(key)}
                 className={cn(
-                  "relative z-10 rounded-full px-3.5 py-1.5 text-[0.8125rem] font-medium transition-colors duration-200",
+                  "relative z-10 rounded-full px-4 py-2 text-[0.875rem] font-medium sm:px-3.5 sm:py-1.5 sm:text-[0.8125rem] transition-colors duration-200",
                   active ? "text-fg" : "text-fg-subtle hover:text-fg-muted",
                 )}
               >
@@ -133,7 +133,7 @@ export function Ledger({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search name, phone, note…"
             aria-label="Search entries"
-            className="h-10 w-full rounded-full border border-white/8 bg-ink-850/60 pl-10 pr-4 text-[0.8125rem] outline-none transition-all placeholder:text-fg-subtle/70 hover:border-white/15 focus:border-brand-400/60 focus:shadow-[0_0_0_4px_rgb(124_92_255/0.12)]"
+            className="h-11 w-full rounded-full border border-white/8 bg-ink-850/60 pl-10 pr-4 text-base sm:h-10 sm:text-[0.8125rem] outline-none transition-all placeholder:text-fg-subtle/70 hover:border-white/15 focus:border-brand-400/60 focus:shadow-[0_0_0_4px_rgb(124_92_255/0.12)]"
           />
         </div>
 
@@ -244,7 +244,7 @@ export function Ledger({
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 340, damping: 22, delay: 0.4 }}
           whileTap={{ scale: 0.9 }}
-          className="fixed bottom-20 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-linear-to-br from-brand-400 to-brand-600 shadow-[0_16px_40px_-12px_rgb(124_92_255/0.95)] lg:hidden"
+          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-40 grid h-14 w-14 place-items-center rounded-full bg-linear-to-br from-brand-400 to-brand-600 shadow-[0_16px_40px_-12px_rgb(124_92_255/0.95)] lg:hidden"
         >
           <Plus className="h-6 w-6 text-white" />
         </motion.button>

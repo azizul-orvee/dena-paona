@@ -6,7 +6,7 @@ Why things are the way they are. Newest first.
 **Context:** Owner wanted a quick APK that loads the site.
 **Decision:** Bubblewrap-generated TWA (`android/`) pointing at the production URL, verified via `public/.well-known/assetlinks.json`.
 **Alternatives considered:** A plain WebView wrapper — rejected because Google blocks OAuth in embedded WebViews, and sign-in is Google-only. Capacitor — heavier, same WebView problem.
-**Consequences:** Needs Chrome (or another TWA browser) on the phone; falls back to a Custom Tab otherwise. The app always shows the live site, so web deploys update it with no new APK. The signing keystore is the app's identity; keep it safe.
+**Consequences:** Chrome shows a one-time "Running in Chrome" notice on first launch; the app can't suppress it (it tells users their Chrome cookies are shared). Needs Chrome (or another TWA browser) on the phone; falls back to a Custom Tab otherwise. The app always shows the live site, so web deploys update it with no new APK. The signing keystore is the app's identity; keep it safe.
 
 ## 2026-09-28 — Local Postgres for development; Neon is production only
 **Context:** There was a single Neon database used for both development and (future) production, and it holds the owner's real account. The project's Hard rules forbid dev/test writes to production.

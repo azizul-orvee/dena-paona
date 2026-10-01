@@ -6,7 +6,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const inputBase =
-  "peer w-full rounded-2xl border border-white/10 bg-ink-850/80 px-4 text-sm text-fg " +
+  "peer w-full rounded-2xl border border-white/10 bg-ink-850/80 px-4 text-base text-fg sm:text-sm " +
   "placeholder:text-fg-subtle/70 outline-none transition-all duration-200 " +
   "hover:border-white/20 focus:border-brand-400/70 focus:bg-ink-800 " +
   "focus:shadow-[0_0_0_4px_rgb(124_92_255/0.14)] disabled:opacity-50";

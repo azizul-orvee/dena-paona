@@ -29,7 +29,6 @@ Works end-to-end locally: Google sign-in (verified with the owner's real account
 4. In-app "delete my account" (the privacy policy currently promises deletion on email request within 30 days).
 
 ## 🐛 Known issues
-- "Add entry" button: the `+` icon renders above the label instead of beside it. Cause: `Button` wraps children in an inline `<span>` and Tailwind makes SVGs `display:block`; fix by wrapping icon + text in `inline-flex` (done that way in `login-form.tsx`).
 - Seeded `rahim@example.com` can't sign in (Google-only); only "Ayesha" can, via `SEED_EMAIL=<your Google email> npm run seed`.
 - Leftover `drizzle.__drizzle_migrations` table in the production Neon DB (unused; drop only if the owner asks).
 - Once during local testing a signed-in user was bounced to `/login` while `.env.local` was being edited and the dev server reloaded env; not reproducible afterwards.

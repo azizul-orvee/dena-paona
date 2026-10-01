@@ -2,6 +2,19 @@
 
 All changes to this project, newest first. Every AI tool and human must add an entry here after each change.
 
+## 2026-10-02 — Mobile UI polish: icon buttons, tap targets, inputs
+**Type:** fix
+**Tool:** Claude Code
+**What changed:**
+- `src/components/ui/button.tsx`: button content is `inline-flex items-center gap-2`, so icons sit beside the label (fixes "+" above "Add your first entry" / "Add entry")
+- `src/components/ui/field.tsx`, search in `src/components/app/ledger.tsx`: 16px text on phones (14px from `sm`) — readable, and stops iOS zooming into focused inputs; search is 44px tall on phones
+- `src/components/app/ledger.tsx`: Open/Settled/All tabs bigger on phones; floating "+" sits above the tab bar including the gesture-bar inset (`env(safe-area-inset-bottom)`)
+- `src/components/app/entry-card.tsx`: action buttons (record payment, edit, settle, delete) are 40px tap targets below `lg` (32px on desktop)
+- `src/components/ui/modal.tsx` close button and `src/components/app/share-manager.tsx` revoke button: 40px
+- `src/components/ui/toast.tsx`: on phones, toasts appear above the bottom tab bar instead of covering it
+**Why:** Owner reported the "+" above the label on the Android app and asked for other ugly UI to be fixed.
+**Notes / gotchas:** Chrome's "Running in Chrome" notice in the Android app (TWA) can't be turned off by the app; see DECISIONS. Signed-in screens not checked visually in the local browser (no local session).
+
 ## 2026-10-02 — Share by email: ignore invisible pasted characters
 **Type:** fix
 **Tool:** Claude Code

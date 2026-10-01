@@ -203,7 +203,7 @@ function ViewerList({ viewers }: { viewers: Viewer[] }) {
                     aria-label={`Revoke ${viewer.viewerName}'s access`}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="grid h-9 w-9 place-items-center rounded-xl text-fg-subtle transition-colors hover:bg-dena-500/15 hover:text-dena-300"
+                    className="grid h-10 w-10 place-items-center rounded-xl text-fg-subtle transition-colors hover:bg-dena-500/15 hover:text-dena-300"
                   >
                     <X className="h-4 w-4" />
                   </motion.button>
