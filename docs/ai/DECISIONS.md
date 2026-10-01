@@ -2,6 +2,12 @@
 
 Why things are the way they are. Newest first.
 
+## 2026-10-02 — Android app is a Trusted Web Activity, not a WebView
+**Context:** Owner wanted a quick APK that loads the site.
+**Decision:** Bubblewrap-generated TWA (`android/`) pointing at the production URL, verified via `public/.well-known/assetlinks.json`.
+**Alternatives considered:** A plain WebView wrapper — rejected because Google blocks OAuth in embedded WebViews, and sign-in is Google-only. Capacitor — heavier, same WebView problem.
+**Consequences:** Needs Chrome (or another TWA browser) on the phone; falls back to a Custom Tab otherwise. The app always shows the live site, so web deploys update it with no new APK. The signing keystore is the app's identity; keep it safe.
+
 ## 2026-09-28 — Local Postgres for development; Neon is production only
 **Context:** There was a single Neon database used for both development and (future) production, and it holds the owner's real account. The project's Hard rules forbid dev/test writes to production.
 **Decision:** Dev runs on a local Postgres 17 (Homebrew service, db `dena_paona_dev`). `src/lib/prisma.ts` uses `PrismaNeon` for `*.neon.tech` hosts and `PrismaPg` for anything else. The Neon URL is parked in `.env.local` as `PROD_DATABASE_URL`, which no code reads.

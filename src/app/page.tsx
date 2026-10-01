@@ -25,22 +25,22 @@ export default async function LandingPage() {
     <div className="grain relative min-h-dvh overflow-x-hidden">
       <Aurora />
 
-      <header className="relative z-20">
-        <div className="mx-auto flex h-20 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
-          <Logo />
-          <nav className="flex items-center gap-2 sm:gap-3">
+      <header className="relative z-20 pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:h-20 sm:px-8">
+          <Logo markClassName="h-7 w-7 sm:h-8 sm:w-8" />
+          <nav className="flex shrink-0 items-center gap-1 sm:gap-3">
             <Link
               href="/login"
-              className="rounded-full px-4 py-2 text-[0.875rem] font-medium text-fg-muted transition-colors hover:text-fg"
+              className="hidden h-10 items-center whitespace-nowrap rounded-full px-3 text-[0.875rem] min-[360px]:inline-flex font-medium text-fg-muted transition-colors hover:text-fg sm:px-4"
             >
               Sign in
             </Link>
             <Link
               href="/login"
-              className="group inline-flex items-center gap-1.5 rounded-full bg-linear-to-br from-brand-400 to-brand-600 px-4 py-2 text-[0.875rem] font-medium text-white shadow-[0_10px_30px_-14px_rgb(124_92_255/0.95)] transition-transform duration-200 hover:scale-[1.03] active:scale-95 sm:px-5"
+              className="group inline-flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full bg-linear-to-br from-brand-400 to-brand-600 px-4 text-[0.875rem] font-medium text-white shadow-[0_10px_30px_-14px_rgb(124_92_255/0.95)] transition-transform duration-200 hover:scale-[1.03] active:scale-95 sm:px-5"
             >
               Get started
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              <ArrowRight className="hidden h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 min-[400px]:block" />
             </Link>
           </nav>
         </div>

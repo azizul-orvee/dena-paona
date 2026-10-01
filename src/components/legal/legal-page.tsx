@@ -25,8 +25,8 @@ export function LegalPage({
     <div className="grain relative min-h-dvh overflow-x-hidden">
       <Aurora />
 
-      <header className="relative z-20">
-        <div className="mx-auto flex h-20 w-full max-w-3xl items-center justify-between px-5 sm:px-8">
+      <header className="relative z-20 pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between gap-3 px-4 sm:h-20 sm:px-8">
           <Link
             href="/"
             className="inline-flex rounded-xl transition-opacity hover:opacity-80"

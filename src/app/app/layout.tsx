@@ -17,14 +17,14 @@ export default async function AppLayout({
     <div className="grain relative min-h-dvh">
       <Aurora intensity="subtle" />
 
-      <header className="sticky top-0 z-30 border-b border-white/6 bg-ink-950/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
+      <header className="sticky top-0 z-30 border-b border-white/6 bg-ink-950/80 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+        <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:h-16 sm:px-8">
           <Link
             href="/app"
             className="rounded-xl transition-opacity hover:opacity-80"
             aria-label="Dena-Paona overview"
           >
-            <Logo />
+            <Logo markClassName="h-7 w-7 sm:h-8 sm:w-8" />
           </Link>
           <UserMenu name={user.name} email={user.email} />
         </div>

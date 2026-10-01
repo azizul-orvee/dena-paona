@@ -1,9 +1,11 @@
-# Status — last updated 2026-10-01
+# Status — last updated 2026-10-02
 
 ## Current state
 Works end-to-end locally: Google sign-in (verified with the owner's real account), ledger CRUD, part payments, totals, read-only sharing by email, sign-out. Development now runs on a **local Postgres**; Neon is production only. Typecheck, lint and `next build` pass. Deployed on Vercel at https://dena-paona-final.vercel.app (owner set it up); Google sign-in there was failing on 2026-10-01, most likely env vars / Google client config — see Next up. All work is committed and pushed to `origin/main`. Production DB is on migration `2_entry_address`.
 
 ## ✅ Recently done
+- Android APK (Trusted Web Activity) in `android/`, output `dena-paona.apk`. Signing keystore + passwords are local only (gitignored) — back them up.
+- Headers are mobile-friendly (landing, app, legal): one line at 320–375px, safe-area aware, 40px tap targets. Original dark violet/teal style kept.
 - Home page shows plain "Total paona" and "Total dena" cards (no net position, no by-person net strip, no "Settled so far"); zero dena shows a "Debt-free" message. Nav tab renamed Overview → Home.
 - Sign-in failures now explain themselves: the login banner shows the HTTP status and, via `/api/health`, which setup check failed (database, `BETTER_AUTH_URL`, secret, Google vars). Open `https://dena-paona-final.vercel.app/api/health` directly to see the same.
 - Public `/privacy` and `/terms` pages (needed to publish the Google OAuth app), linked from the landing footer and the login page. Contact email is `CONTACT_EMAIL` in `src/components/legal/legal-page.tsx`.
@@ -20,6 +22,7 @@ Works end-to-end locally: Google sign-in (verified with the owner's real account
 - Nothing mid-way.
 
 ## ⏭️ Next up
+0. Deploy so `/.well-known/assetlinks.json` is live (removes the URL bar in the Android app), then install `dena-paona.apk` on a phone and test Google sign-in.
 1. Get production sign-in working (check `/api/health` on the live site first): Vercel `BETTER_AUTH_URL` = `https://dena-paona-final.vercel.app` (no trailing slash), `DATABASE_URL` = Neon, redeploy. Google client: origin `https://dena-paona-final.vercel.app`, redirect `https://dena-paona-final.vercel.app/api/auth/callback/google`.
 2. Publish the Google OAuth app: fill Branding (home page, `/privacy`, `/terms`, authorized domain `dena-paona-final.vercel.app`, emails), then Audience → Publish app.
 3. Profile screen to edit name and (optional) phone — there's no UI for either today.

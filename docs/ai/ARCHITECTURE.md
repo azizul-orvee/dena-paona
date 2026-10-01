@@ -2,6 +2,8 @@
 
 ## Folder map
 ```
+android/                   ← Trusted Web Activity (Bubblewrap) wrapping the live site; config in twa-manifest.json
+public/.well-known/assetlinks.json ← ties the Android app (com.denapaona.app) to the domain
 prisma/
 ├── schema.prisma          ← data model (source of truth)
 └── migrations/            ← checked-in SQL: 0_init (baseline), 1_better_auth, 2_entry_address

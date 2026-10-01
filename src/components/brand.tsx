@@ -66,7 +66,7 @@ export function Logo({
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <Mark className={cn("h-8 w-8 shrink-0", markClassName)} />
       {showWordmark ? (
-        <span className="font-display text-[1.0625rem] font-600 leading-none tracking-tight text-fg">
+        <span className="whitespace-nowrap font-display text-[1rem] font-600 leading-none tracking-tight text-fg sm:text-[1.0625rem]">
           Dena
           <span className="text-fg-subtle">-</span>
           Paona

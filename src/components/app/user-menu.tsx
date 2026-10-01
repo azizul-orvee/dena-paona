@@ -33,7 +33,7 @@ export function UserMenu({ name, email }: { name: string; email: string }) {
         aria-haspopup="menu"
         aria-expanded={open}
         whileTap={{ scale: 0.95 }}
-        className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] py-1 pl-1 pr-3 transition-colors hover:bg-white/[0.08]"
+        className="flex h-10 items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] p-1 transition-colors hover:bg-white/[0.08] sm:pr-3"
       >
         <span className="grid h-8 w-8 place-items-center rounded-full bg-linear-to-br from-brand-400 to-accent-500 text-[0.75rem] font-700 text-ink-950">
           {initials(name)}
@@ -51,7 +51,7 @@ export function UserMenu({ name, email }: { name: string; email: string }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 420, damping: 32 }}
-            className="glass-strong absolute right-0 top-[calc(100%+0.5rem)] z-50 w-60 origin-top-right overflow-hidden rounded-2xl p-1.5"
+            className="glass-strong absolute right-0 top-[calc(100%+0.5rem)] z-50 w-[min(15rem,calc(100vw-2rem))] origin-top-right overflow-hidden rounded-2xl p-1.5"
           >
             <div className="px-3 py-2.5">
               <p className="truncate text-sm font-medium">{name}</p>

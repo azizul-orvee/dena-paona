@@ -69,3 +69,9 @@ Deployed on Vercel at `https://dena-paona-final.vercel.app` (Vercel project set 
 - **Local dev DB:** Homebrew `postgresql@17` service, database `dena_paona_dev`, trust auth for the Mac user (no password). The Neon project also has a `neon_auth` schema (Neon's own hosted auth) that this app does not use.
 - **Google Cloud Console:** OAuth client (Web application) with redirect URI `http://localhost:3000/api/auth/callback/google`. Consent screen is in **Testing** mode.
 - **Vercel:** TODO: confirm with user.
+
+## Android app (TWA)
+- Project: `android/` (Bubblewrap). Config: `android/twa-manifest.json`.
+- Build: `cd android && npx @bubblewrap/cli build --skipPwaValidation`, with `BUBBLEWRAP_KEYSTORE_PASSWORD` / `BUBBLEWRAP_KEY_PASSWORD` set from `android/keystore.properties` (gitignored). Needs `~/.bubblewrap/config.json` pointing at JDK 17 and `android/.sdk`. Run with the sandbox disabled.
+- After changing `twa-manifest.json`: bump `appVersionCode`, run `npx @bubblewrap/cli update`, then build.
+- `public/.well-known/assetlinks.json` must contain the keystore's SHA-256 and be deployed.
