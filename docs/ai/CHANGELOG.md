@@ -2,6 +2,22 @@
 
 All changes to this project, newest first. Every AI tool and human must add an entry here after each change.
 
+## 2026-10-02 — Share by email: ignore invisible pasted characters
+**Type:** fix
+**Tool:** Claude Code
+**What changed:**
+- `src/lib/validation.ts` `emailSchema`: strips all whitespace and Unicode format characters (`\p{Cf}`: zero-width space/joiner, word joiner, BOM, soft hyphen) before lower-casing and validating, instead of only `.trim()`
+**Why:** In production, "Grant access" rejected a real, registered address with "That doesn't look like an email address". A plain address passes; the same address with an invisible character (common when copied from WhatsApp, Messenger or a PDF) failed the format check before the account lookup ever ran.
+**Notes / gotchas:** Tested with plain, zero-width-space, word-joiner, BOM, mixed-case + trailing space (all now accepted and normalised), empty/blank ("Enter an email address") and "not an email" (still rejected). Only the share form uses `emailSchema`. Production DB not read or changed.
+
+## 2026-10-02 — Deployed Android asset links
+**Type:** deploy
+**Tool:** Claude Code
+**What changed:**
+- Committed and pushed `2b328b0` to `main` (owner's request); Vercel deployed it. `https://dena-paona-final.vercel.app/.well-known/assetlinks.json` returns 200 JSON, and Google's Digital Asset Links API reports `linked: true` for `com.denapaona.app`, so the Android app opens without a URL bar
+**Why:** Owner wanted the app to look native.
+**Notes / gotchas:** No database changes. Keystore and passwords were not committed.
+
 ## 2026-10-02 — Android app (APK) as a Trusted Web Activity
 **Type:** feature
 **Tool:** Claude Code

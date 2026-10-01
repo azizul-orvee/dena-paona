@@ -1,12 +1,20 @@
 import { z } from "zod";
 
-/** Trimmed and lower-cased so lookups match how accounts are stored. */
+/**
+ * Lower-cased so lookups match how accounts are stored. Whitespace and
+ * invisible format characters (zero-width spaces, word joiners, BOMs — common
+ * when an address is pasted from WhatsApp, Messenger or a PDF) are stripped,
+ * since a real email address can't contain either.
+ */
 export const emailSchema = z
   .string()
-  .trim()
-  .toLowerCase()
-  .min(1, "Enter an email address")
-  .pipe(z.email("That doesn't look like an email address"));
+  .transform((value) => value.replace(/[\s\p{Cf}]/gu, "").toLowerCase())
+  .pipe(
+    z
+      .string()
+      .min(1, "Enter an email address")
+      .pipe(z.email("That doesn't look like an email address")),
+  );
 
 export const entrySchema = z.object({
   kind: z.enum(["dena", "paona"]),

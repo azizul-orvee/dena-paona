@@ -22,7 +22,7 @@ Works end-to-end locally: Google sign-in (verified with the owner's real account
 - Nothing mid-way.
 
 ## ⏭️ Next up
-0. Deploy so `/.well-known/assetlinks.json` is live (removes the URL bar in the Android app), then install `dena-paona.apk` on a phone and test Google sign-in.
+0. Install `dena-paona.apk` on a phone and test Google sign-in (assetlinks is live and verified, so no URL bar).
 1. Get production sign-in working (check `/api/health` on the live site first): Vercel `BETTER_AUTH_URL` = `https://dena-paona-final.vercel.app` (no trailing slash), `DATABASE_URL` = Neon, redeploy. Google client: origin `https://dena-paona-final.vercel.app`, redirect `https://dena-paona-final.vercel.app/api/auth/callback/google`.
 2. Publish the Google OAuth app: fill Branding (home page, `/privacy`, `/terms`, authorized domain `dena-paona-final.vercel.app`, emails), then Audience → Publish app.
 3. Profile screen to edit name and (optional) phone — there's no UI for either today.
